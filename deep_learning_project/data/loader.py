@@ -1,5 +1,8 @@
 
 import tensorflow as tf
+import os
+import sqlite3
+import pandas as pd
 
 '''
 load_mnist_data function:
@@ -18,3 +21,13 @@ def load_mnist_data():
     x_train = x_train[..., tf.newaxis] # add channel dimension
     x_test = x_test[..., tf.newaxis]
     return (x_train, y_train), (x_test, y_test) # return training and test data
+
+
+def load_ml_data():
+    db_path = os.path.join(os.path.dirname(__file__), "..", "data", "ml_data.db")
+    conn = sqlite3.connect(db_path)
+    df = pd.read_sql_query("SELECT feature1, feature2, label FROM training_data", conn)
+    conn.close()
+    X = df[['feature1', 'feature2']].values
+    y = df[['label']].values
+    return X, y
